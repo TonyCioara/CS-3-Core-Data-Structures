@@ -19,10 +19,28 @@ def decode(digits, base):
     assert 2 <= base <= 36, 'base is out of range: {}'.format(base)
     # TODO: Decode digits from binary (base 2)
     # ...
+
     # TODO: Decode digits from hexadecimal (base 16)
     # ...
+
     # TODO: Decode digits from any base (2 up to 36)
     # ...
+    power = -1
+    final_number = 0
+    # Count digits
+    for digit in digits:
+        power += 1
+    # Create base 10 number
+    for digit in digits:
+        # Convert letters to numbers
+        if ord(digit) >= 97 and ord(digit) <= 122:
+            digit = ord(digit) - 87
+        if int(digit) >= base:
+            raise ValueError('Invalid input')
+            return
+        final_number += int(digit) * base ** power
+        power -= 1
+    return final_number
 
 
 def encode(number, base):
@@ -40,6 +58,26 @@ def encode(number, base):
     # ...
     # TODO: Encode number in any base (2 up to 36)
     # ...
+    power = 0
+    current_decimal = 0
+    new_number = ""
+
+    # Find biggest power inside the number
+    while base ** power < number:
+        power += 1
+    while power >= 0:
+        if base ** power <= number:
+            current_decimal += 1
+            number -= base ** power
+        else:
+            if current_decimal >= 10:
+                current_decimal = chr(current_decimal + 87)
+            new_number += str(current_decimal)
+            if new_number == "0":
+                new_number = ""
+            current_decimal = 0
+            power -= 1
+    return new_number
 
 
 def convert(digits, base1, base2):
@@ -59,6 +97,9 @@ def convert(digits, base1, base2):
     # ...
     # TODO: Convert digits from any base to any base (2 up to 36)
     # ...
+    number = decode(digits, base1)
+    result = encode(number, base2)
+    return result
 
 
 def main():

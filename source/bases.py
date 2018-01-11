@@ -59,24 +59,29 @@ def encode(number, base):
     # TODO: Encode number in any base (2 up to 36)
     # ...
     power = 0
-    current_decimal = 0
+    current_digit_value = 0
     new_number = ""
 
     # Find biggest power inside the number
-    while base ** power < number:
+    while base ** power <= number / base:
         power += 1
     while power >= 0:
+        # See how many times the base to the power fits into the number
         if base ** power <= number:
-            current_decimal += 1
+            current_digit_value += 1
             number -= base ** power
+        # Go to the following digit
         else:
-            if current_decimal >= 10:
-                current_decimal = chr(current_decimal + 87)
-            new_number += str(current_decimal)
+            # Convert value to digit with coresponding value in base
+            if current_digit_value >= 10:
+                current_digit_value = chr(current_digit_value + 87)
+            new_number += str(current_digit_value)
             if new_number == "0":
                 new_number = ""
-            current_decimal = 0
+            current_digit_value = 0
             power -= 1
+    if new_number == "":
+        new_number = "0"
     return new_number
 
 

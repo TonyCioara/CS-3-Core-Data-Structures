@@ -13,20 +13,61 @@ def is_palindrome(text):
     # implement is_palindrome_iterative and is_palindrome_recursive below, then
     # change this to call your implementation to verify it passes all tests
     assert isinstance(text, str), 'input is not a string: {}'.format(text)
-    return is_palindrome_iterative(text)
-    # return is_palindrome_recursive(text)
+    # return is_palindrome_iterative(text)
+    return is_palindrome_recursive(text)
 
+def clean_text(text):
+    import re
+    text = re.sub('[^a-zA-Z]+', '', text)
+    text = text.lower()
+    return text
 
 def is_palindrome_iterative(text):
     # TODO: implement the is_palindrome function iteratively here
-    pass
+    """text = clean_text(text)
+    text_length = len(text)
+    last_letter_index = text_length - 1
+    for letter_index in range(0, int(text_length / 2)):
+        if text[0 + letter_index] != text[last_letter_index - letter_index]:
+            return False
+    return True"""
+
+    text = text.lower()
+    text_length = len(text)
+    last_index = text_length - 1
+    first_index = 0
+    while first_index < last_index:
+        if text[first_index].isalpha() is False:
+            first_index += 1
+        elif text[last_index].isalpha() is False:
+            last_index -= 1
+        elif text[first_index] != text[last_index]:
+            return False
+        else:
+            last_index -= 1
+            first_index += 1
+    return True
     # once implemented, change is_palindrome to call is_palindrome_iterative
     # to verify that your iterative implementation passes all tests
 
 
 def is_palindrome_recursive(text, left=None, right=None):
     # TODO: implement the is_palindrome function recursively here
-    pass
+    if left is None:
+        text = text.lower()
+        text_length = len(text)
+        left = 0
+        right = text_length - 1
+    if left >= right:
+        return True
+    elif text[left].isalpha() is False:
+        return is_palindrome_recursive(text, left + 1, right)
+    elif text[right].isalpha() is False:
+        return is_palindrome_recursive(text, left, right - 1)
+    elif text[left] != text[right]:
+        return False
+    else:
+        return is_palindrome_recursive(text, left + 1, right - 1)
     # once implemented, change is_palindrome to call is_palindrome_recursive
     # to verify that your iterative implementation passes all tests
 
@@ -46,4 +87,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    print(is_palindrome('No, On!'))

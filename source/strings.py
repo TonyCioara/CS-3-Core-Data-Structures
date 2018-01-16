@@ -42,12 +42,14 @@ def find_index(text, pattern, pattern_index=0, text_index=0):
         return find_index(text, pattern, 0, text_index)
 
 
-def find_all_indexes(text, pattern, pattern_index=0, text_index=0, index_array=[]):
+def find_all_indexes(text, pattern, pattern_index=0, text_index=0, index_array=None):
     """Return a list of starting indexes of all occurrences of pattern in text,
     or an empty list if not found."""
     assert isinstance(text, str), 'text is not a string: {}'.format(text)
     assert isinstance(pattern, str), 'pattern is not a string: {}'.format(text)
     # TODO: Implement find_all_indexes here (iteratively and/or recursively)
+    if index_array is None:
+        index_array = []
     if pattern == "":
         if text_index >= len(text):
             return index_array
@@ -55,7 +57,8 @@ def find_all_indexes(text, pattern, pattern_index=0, text_index=0, index_array=[
         return find_all_indexes(text, pattern, 0, text_index + 1, index_array)
     if pattern_index >= len(pattern):
         index_array.append(text_index - len(pattern))
-        return find_all_indexes(text, pattern, 0, text_index + 1, index_array)
+        next_text_index = text_index - len(pattern) + 1
+        return find_all_indexes(text, pattern, 0, next_text_index, index_array)
     if text_index >= len(text):
         return index_array
     if text[text_index] == pattern[pattern_index]:
@@ -97,3 +100,9 @@ def main():
 if __name__ == '__main__':
     # main()
     print(find_all_indexes('abc', 'z'))
+    find_all_indexes('abc', 'a') == [0]  # single letters are easy
+    find_all_indexes('abc', 'b') == [1]
+    find_all_indexes('abc', 'c') == [2]
+    print('should all be empty:')
+    find_all_indexes('abc', 'z') == []  # remember to test other letters
+    find_all_indexes('abc', 'ac') == []  # important to test close cases

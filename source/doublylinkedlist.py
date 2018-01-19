@@ -6,13 +6,14 @@ class Node(object):
         """Initialize this node with the given data."""
         self.data = data
         self.next = None
+        self.previous = None
 
     def __repr__(self):
         """Return a string representation of this node."""
         return 'Node({!r})'.format(self.data)
 
 
-class LinkedList(object):
+class DoublyLinkedList(object):
 
     def __init__(self, iterable=None):
         """Initialize this linked list and append the given items, if any."""
@@ -120,6 +121,7 @@ class LinkedList(object):
         else:
             # Otherwise insert new node after tail
             self.tail.next = new_node
+            new_node.previous = self.tail
         # Update tail to new node regardless
         self.tail = new_node
         self.size += 1
@@ -136,6 +138,7 @@ class LinkedList(object):
         else:
             # Otherwise insert new node before head
             new_node.next = self.head
+            self.head.previous = new_node
         # Update head to new node regardless
         self.head = new_node
         self.size += 1
@@ -180,46 +183,31 @@ class LinkedList(object):
         Worst case running time: ??? under what conditions? [TODO]"""
         # Start at the head node
         node = self.head
-        # Keep track of the node before the one containing the given item
-        previous = None
-        # Create a flag to track if we have found the given item
-        found = False
-        # Loop until we have found the given item or the node is None
-        while not found and node is not None:
-            # Check if the node's data matches the given item
+        while node is not None:
             if node.data == item:
-                # We found data matching the given item, so update found flag
-                found = True
-            else:
-                # Skip to the next node
-                previous = node
-                node = node.next
-        # Check if we found the given item or we never did and reached the tail
-        if found:
-            # Check if we found a node in the middle of this linked list
-            if node is not self.head and node is not self.tail:
-                # Update the previous node to skip around the found node
-                previous.next = node.next
-                # Unlink the found node from its next node
-                node.next = None
-            # Check if we found a node at the head
-            if node is self.head:
-                # Update head to the next node
-                self.head = node.next
-                # Unlink the found node from the next node
-                node.next = None
-            # Check if we found a node at the tail
-            if node is self.tail:
-                # Check if there is a node before the found node
-                if previous is not None:
-                    # Unlink the previous node from the found node
-                    previous.next = None
-                # Update tail to the previous node regardless
-                self.tail = previous
-            self.size -= 1
-        else:
-            # Otherwise raise an error to tell the user that delete has failed
-            raise ValueError('Item not found: {}'.format(item))
+                self.size -= 1
+                if node is self.head:
+                    if self.tail is self.head:
+                        self.tail = None
+                        self.head = None
+                        return
+                    next_node = node.next
+                    next_node.previous = None
+                    self.head = next_node
+                    return
+                elif node is self.tail:
+                    previous_node = node.previous
+                    previous_node.next = None
+                    self.tail = previous_node
+                    return
+                else:
+                    previous_node = node.previous
+                    next_node = node.next
+                    previous_node.next = next_node
+                    next_node.previous = previous_node
+                    return
+            node = node.next
+        raise ValueError('Item not found: {}'.format(item))
 
 
 def test_linked_list():

@@ -105,8 +105,11 @@ class DoublyLinkedList(object):
             previous_node = previous_node.next
             index -= 1
         new_node = Node(item)
-        new_node.next = previous_node.next
+        next_node = previous_node.next
+        new_node.next = next_node
+        new_node.previous = previous_node
         previous_node.next = new_node
+        next_node.previous = new_node
         self.size += 1
 
     def append(self, item):
@@ -190,28 +193,26 @@ class DoublyLinkedList(object):
                     if self.tail is self.head:
                         self.tail = None
                         self.head = None
-                        return
-                    next_node = node.next
-                    next_node.previous = None
-                    self.head = next_node
-                    return
+                    else:
+                        next_node = node.next
+                        next_node.previous = None
+                        self.head = next_node
                 elif node is self.tail:
                     previous_node = node.previous
                     previous_node.next = None
                     self.tail = previous_node
-                    return
                 else:
                     previous_node = node.previous
                     next_node = node.next
                     previous_node.next = next_node
                     next_node.previous = previous_node
-                    return
+                return
             node = node.next
         raise ValueError('Item not found: {}'.format(item))
 
 
-def test_linked_list():
-    ll = LinkedList()
+def test_doubly_linked_list():
+    ll = DoublyLinkedList()
     print(ll)
 
     print('Appending items:')
@@ -245,6 +246,4 @@ def test_linked_list():
 
 
 if __name__ == '__main__':
-    # test_linked_list()
-    ll = LinkedList(['A', 'B', 'C'])
-    print(ll.get_at_index(0) == 'A')
+    test_linked_list()

@@ -16,7 +16,7 @@ def contains(text, pattern):
                 return True
             pattern_index += 1
         elif pattern_index != 0:
-            text_index -= 1
+            text_index -= pattern_index
             pattern_index = 0
         text_index += 1
     return False
@@ -39,7 +39,7 @@ def find_index(text, pattern, pattern_index=0, text_index=0):
     if pattern_index == 0:
         return find_index(text, pattern, 0, text_index + 1)
     else:
-        return find_index(text, pattern, 0, text_index)
+        return find_index(text, pattern, 0, text_index - pattern_index + 1)
 
 
 def find_all_indexes(text, pattern, pattern_index=0, text_index=0, index_array=None):

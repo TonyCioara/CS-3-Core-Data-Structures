@@ -66,6 +66,8 @@ class ArrayQueue(object):
         # Initialize a new list (dynamic array) to store the items
         self.list = list()
         self.list_size = 0
+        self.first_item = 0
+        self.max_size = 4
         if iterable is not None:
             for item in iterable:
                 self.enqueue(item)
@@ -91,15 +93,32 @@ class ArrayQueue(object):
         Running time: O(1) – Why? It's always a constant number of steps,
         independent of input"""
         # TODO: Insert given item
-        self.list.append(item)
-        self.list_size += 1
+        if self.first_item >= self.max_size:
+            self.list[self.first_item - self.max_size] = item
+        else:
+            self.list.append(item)
+            self.list_size += 1
+        if self.list_size >= self.max_size:
+            self.resize()
+        if self.first_item >= self.max_size:
+            self.first_item -= self.max_size
+
+    def resize(self):
+        new_list = self.list
+        self.list = []
+        for index in range(0, self.max_size - 1):
+            current_index = index + self.first_item
+            if current_index >= self.max_size:
+                current_index -= self.max_size
+            self.list.append(new_list[index])
+        self.max_size = self.max_size * 2
 
     def front(self):
         """Return the item at the front of this queue without removing it,
         or None if this queue is empty."""
         # TODO: Return front item, if any
         if self.list_size > 0:
-            return self.list[0]
+            return self.list[self.first_item]
         return None
 
     def dequeue(self):
@@ -109,9 +128,9 @@ class ArrayQueue(object):
         or a new array has to be created"""
         # TODO: Remove and return front item, if any
         if self.list_size > 0:
-            item = self.list[0]
+            item = self.list[self.first_item]
+            self.first_item += 1
             self.list_size -= 1
-            self.list.pop(0)
             return item
         raise ValueError('List is empty')
 

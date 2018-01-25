@@ -9,6 +9,7 @@ class HashTable(object):
 
     def __init__(self, init_size=8, max_load_factor=0.75):
         """Initialize this hash table with the given initial size."""
+        print(max_load_factor)
         self.buckets = [LinkedList() for i in range(init_size)]
         self.size = 0  # Number of key-value entries
         self.maximum_load_factor = max_load_factor
@@ -219,8 +220,8 @@ def test_hash_table():
 def test_hash_table_speed():
 
     start_time = time.time()
-    ht = HashTable(4, int(sys.argv[0]))
-    for index in range(1, 100000):
+    ht = HashTable(4, 1)
+    for index in range(1, 1000000):
         ht.set(index, index)
     end_time = time.time()
     run_time = end_time - start_time

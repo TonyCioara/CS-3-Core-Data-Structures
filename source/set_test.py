@@ -37,9 +37,9 @@ class SetTest(unittest.TestCase):
 
     def test_contains(self):
         s = Set()
-        s.add('I', 1)
-        s.add('V', 5)
-        s.add('X', 10)
+        s.add('I')
+        s.add('V')
+        s.add('X')
         assert s.contains('I') is True
         assert s.contains('V') is True
         assert s.contains('X') is True
@@ -66,6 +66,66 @@ class SetTest(unittest.TestCase):
         assert s.size == 4
         assert len(s.buckets) == 8
         assert s.load_factor() == 0.5
+
+    def test_union(self):
+        set1 = Set()
+        set1.add('I')
+        set1.add('V')
+        set1.add('X')
+        assert set1.size == 3
+        set2 = Set()
+        set2.add('G')
+        set2.add('V')
+        set2.add('F')
+        assert set2.size == 3
+        set3 = set1.union(set2)
+        self.assertCountEqual(set3.items(), [('I'), ('V'), ('X'), ('G'), ('F')])
+
+    def test_intersection(self):
+        set1 = Set()
+        set1.add('I')
+        set1.add('V')
+        set1.add('X')
+        assert set1.size == 3
+        set2 = Set()
+        set2.add('X')
+        set2.add('V')
+        set2.add('F')
+        assert set2.size == 3
+        set3 = set1.intersection(set2)
+        self.assertCountEqual(set3.items(), [('X'), ('V')])
+
+    def test_difference(self):
+        set1 = Set()
+        set1.add('I')
+        set1.add('V')
+        set1.add('X')
+        assert set1.size == 3
+        set2 = Set()
+        set2.add('G')
+        set2.add('V')
+        set2.add('F')
+        assert set2.size == 3
+        set3 = set1.difference(set2)
+        self.assertCountEqual(set3.items(), [('I'), ('X')])
+
+    def test_is_subset(self):
+        set1 = Set()
+        set1.add('I')
+        set1.add('V')
+        assert set1.size == 2
+        set2 = Set()
+        set2.add('I')
+        set2.add('V')
+        set2.add('X')
+        assert set2.size == 3
+        set3 = Set()
+        set3.add('Q')
+        set3.add('V')
+        set3.add('X')
+        assert set3.size == 3
+        assert set1.is_subset(set2) is True
+        assert set1.is_subset(set3) is False
 
 
 if __name__ == '__main__':

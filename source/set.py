@@ -133,21 +133,26 @@ class Set(object):
 
     def intersection(self, other_set):
         new_set = Set()
-        for element in self.items():
-            if element in other_set.items():
-                new_set.add(element)
+        if self.size < other_set.size:
+            for element in self.items():
+                if other_set.contains(element):
+                    new_set.add(element)
+        else:
+            for element in other_set.items():
+                if self.contains(element):
+                    new_set.add(element)
         return new_set
 
     def difference(self, other_set):
         new_set = Set()
         for element in self.items():
-            if element not in other_set.items():
+            if not other_set.contains(element):
                 new_set.add(element)
         return new_set
 
     def is_subset(self, other_set):
         for element in self.items():
-            if element not in other_set.items():
+            if not other_set.contains(element):
                 return False
         return True
 

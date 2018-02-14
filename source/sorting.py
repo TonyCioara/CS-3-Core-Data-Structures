@@ -1,11 +1,18 @@
 #!python
-
+from binarytree import BinarySearchTree
 
 def is_sorted(items):
     """Return a boolean indicating whether given items are in sorted order.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
     # TODO: Check that all adjacent items are in order, return early if not
+    if len(items) == 2:
+        if items[0] > items[1]:
+            return False
+    for i in range(0, len(items) - 2):
+        if items[i] > items[i + 1]:
+            return False
+    return True
 
 
 def bubble_sort(items):
@@ -15,6 +22,16 @@ def bubble_sort(items):
     TODO: Memory usage: ??? Why and under what conditions?"""
     # TODO: Repeat until all items are in sorted order
     # TODO: Swap adjacent items that are out of order
+    index = 0
+    while index < len(items) - 1:
+        if items[index] > items[index + 1]:
+            stored_item = items[index]
+            items[index] = items[index + 1]
+            items[index + 1] = stored_item
+            if index != 0:
+                index -= 2
+        index += 1
+    return items
 
 
 def selection_sort(items):
@@ -25,16 +42,33 @@ def selection_sort(items):
     # TODO: Repeat until all items are in sorted order
     # TODO: Find minimum item in unsorted items
     # TODO: Swap it with first unsorted item
+    for index in range(0, len(items) - 1):
+        min_index = index
+        for index2 in range(index, len(items)):
+            if items[index2] < items[min_index]:
+                min_index = index2
+        stored_item = items[index]
+        items[index] = items[min_index]
+        items[min_index] = stored_item
+    return items
 
 
 def insertion_sort(items):
     """Sort given items by taking first unsorted item, inserting it in sorted
     order in front of items, and repeating until all items are in order.
-    TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
     # TODO: Repeat until all items are in sorted order
     # TODO: Take first unsorted item
     # TODO: Insert it in sorted order in front of items
+    for index in range(0, len(items) - 1):
+        min_index = index
+        for index2 in range(index, len(items) - 1):
+            if items[index2] < items[min_index]:
+                min_index = index2
+        print(items[min_index])
+        items.insert(items[min_index], index)
+        items.remove(items[min_index])
+    return items
 
 
 def merge(items1, items2):
@@ -45,6 +79,25 @@ def merge(items1, items2):
     # TODO: Repeat until one list is empty
     # TODO: Find minimum item in both lists and append it to new list
     # TODO: Append remaining items in non-empty list to new list
+    new_list = []
+    index1 = 0
+    index2 = 0
+    while index1 < len(items1) or index2 < len(items2):
+        if index1 >= len(items1):
+            new_list.append(items2[index2])
+            index2 += 1
+        elif index2 >= len(items2):
+            new_list.append(items1[index1])
+            index1 += 1
+        else:
+            if items1[index1] < items2[index2]:
+                new_list.append(items1[index1])
+                index1 += 1
+            else:
+                new_list.append(items2[index2])
+                index2 += 1
+    print(new_list)
+    return new_list
 
 
 def split_sort_merge(items):
@@ -56,6 +109,12 @@ def split_sort_merge(items):
     # TODO: Split items list into approximately equal halves
     # TODO: Sort each half using any other sorting algorithm
     # TODO: Merge sorted halves into one list in sorted order
+    items1 = items[:int(len(items)/2)]
+    items2 = items[int(len(items)/2):]
+    items1 = bubble_sort(items1)
+    items2 = bubble_sort(items2)
+    items[:] = merge(items1, items2)
+    return items
 
 
 def merge_sort(items):
@@ -67,6 +126,38 @@ def merge_sort(items):
     # TODO: Split items list into approximately equal halves
     # TODO: Sort each half by recursively calling merge sort
     # TODO: Merge sorted halves into one list in sorted order
+    if items > 2:
+        return items
+
+    middle = len(items)//2
+    left = items[:middle]
+    right = items[middle:]
+
+    merge_sort(left)
+    merge_sort(right)
+
+    merge(left, right)
+
+
+def tree_sort(items):
+    tree = BinarySearchTree(items)
+    items[:] = tree.items_in_order()
+
+
+def quick_sort(items):
+    if len(items) <= 1:
+        return
+    first_item = items[0]
+    left = []
+    right = []
+    for item in items[1:]:
+        if item < first_item:
+            left.append(item)
+        else:
+            right.append(item)
+    quick_sort(left)
+    quick_sort(right)
+    items[:] = left + [first_item] + right
 
 
 def random_ints(count=20, min=1, max=50):
